@@ -5,7 +5,10 @@ from utils.xml_utils import create_xml,xml_to_str
 from utils.mikan import add_feeds_from_mikan_project
 from flask_crontab import Crontab
 import requests
-
+from utils import settings
+from utils.req_utils import make_response
+import urllib.parse 
+from utils.feishu_utils import sendFeishuMsg
 
 def fill_zero(num):
     if num < 10:
@@ -55,6 +58,22 @@ def add_mikan_project():
     print("addmikan")
     add_feeds_from_mikan_project()
     return "done"
+
+@app.route("/sub")
+def get_sub():
+    url = request.args.get("url")
+    url = urllib.parse.unquote(urllib.parse.unquote(url))
+    return make_response(requests.get(url, proxies={
+        "http":settings.HTTP_PROXY,
+        "https":settings.HTTPS_PROXY
+    }))
+
+@app.route("/feishu/push")
+def feishu_push():
+    text = request.args.get("text")
+    text = urllib.parse.unquote(text)
+    sendFeishuMsg(text)
+    return "success"
 
 
 if __name__ == "__main__":
