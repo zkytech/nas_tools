@@ -64,8 +64,8 @@ def get_sub():
     url = request.args.get("url")
     url = urllib.parse.unquote(urllib.parse.unquote(url))
     return make_response(requests.get(url, proxies={
-        "http":settings.HTTP_PROXY,
-        "https":settings.HTTPS_PROXY
+        "http":settings.PROXY,
+        "https":settings.PROXY
     }))
 
 @app.route("/feishu/push")

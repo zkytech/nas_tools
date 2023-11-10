@@ -36,8 +36,8 @@ def add_feeds_from_mikan_project():
 
     publish_group = settings.PUBLISH_GROUP
     resp = requests.get("https://mikanani.me/Home/PublishGroup/{}".format(publish_group),proxies={
-        "http": settings.HTTP_PROXY,
-        "https": settings.HTTPS_PROXY
+        "http": settings.PROXY,
+        "https": settings.PROXY
     })
     print(resp)
     for timeline in etree.HTML(resp.text).xpath('//div[contains(@class,"js-sort-item pubgroup-timeline-item")]'):
