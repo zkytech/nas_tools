@@ -24,9 +24,9 @@ headers = {
 }
 app = Flask(__name__)
 crontab = Crontab(app)
-@crontab.job(minute="0", hour="*")
-def my_scheduled_job():
-    add_feeds_from_mikan_project()
+# @crontab.job(minute="0", hour="*")
+# def my_scheduled_job():
+#     add_feeds_from_mikan_project()
 
 # 6v电影网  https://www.6vw.cc
 @app.route("/6vw")
@@ -53,11 +53,11 @@ def hello_world():
     resp.headers['Content-Type'] = 'application/xml'
     return resp
 
-@app.route("/rss/add_mikan")
-def add_mikan_project():
-    print("addmikan")
-    add_feeds_from_mikan_project()
-    return "done"
+# @app.route("/rss/add_mikan")
+# def add_mikan_project():
+#     print("addmikan")
+#     add_feeds_from_mikan_project()
+#     return "done"
 
 @app.route("/sub")
 def get_sub():
