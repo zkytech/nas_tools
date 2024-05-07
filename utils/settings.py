@@ -18,3 +18,5 @@ MQTT_CLIENT_ID = os.environ.get("MQTT_CLIENT_ID","123456")
 MQTT_TOPIC = os.environ.get("MQTT_TOPIC","esp32002")
 # 门锁解锁密码
 UNLOCK_DOOR_SECRET = os.environ.get("UNLOCK_DOOR_SECRET", "123456")
+# 是否启用MQTT服务
+ENABLE_MQTT = os.environ.get("ENABLE_MQTT", "false").lower() == "true"

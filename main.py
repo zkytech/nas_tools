@@ -35,7 +35,7 @@ app.config['MQTT_KEEPALIVE'] = 60
 # app.config['MQTT_TLS_ENABLED'] = False
 
 
-mqtt = Mqtt(app)
+
 crontab = Crontab(app)
 @crontab.job(minute="0", hour="*")
 def my_scheduled_job():
@@ -90,25 +90,30 @@ def feishu_push():
     sendFeishuMsg(text)
     return "success"
 
-@mqtt.on_message()
-def handle_mqtt_message(client, userdata, message):
 
-    topic=message.topic[0],
-    payload=message.payload.decode()
-    # socketio.emit('mqtt_message', data=data)
-    print(topic,payload)
-    # 开锁
-    if topic == settings.MQTT_TOPIC and payload == "on":
-        print("on")
-        requests.get(f"http://127.0.0.1:{settings.SERVER_PORT}/{UNLOCK_DOOR_SECRET}")
-    # 闭锁
-    if topic == settings.MQTT_TOPIC and payload == "off":
-        print("off")
+if settings.ENABLE_MQTT:
+    mqtt = Mqtt(app)
+    @mqtt.on_message()
+    def handle_mqtt_message(client, userdata, message):
+
+        topic=message.topic[0],
+        payload=message.payload.decode()
+        # socketio.emit('mqtt_message', data=data)
+        print(topic,payload)
+        # 开锁
+        if topic == settings.MQTT_TOPIC and payload == "on":
+            print("on")
+            requests.get(f"http://127.0.0.1:{settings.SERVER_PORT}/{UNLOCK_DOOR_SECRET}")
+        # 闭锁
+        if topic == settings.MQTT_TOPIC and payload == "off":
+            print("off")
 
 
-@mqtt.on_log()
-def handle_logging(client, userdata, level, buf):
-    print(level, buf)
+    @mqtt.on_log()
+    def handle_logging(client, userdata, level, buf):
+        print(level, buf)
+        
+    mqtt.subscribe(settings.MQTT_TOPIC)
 
 # 注册锁的ip
 @app.route("/register_lock_ip")
@@ -131,5 +136,5 @@ def unlock_door():
     return "命令已转发"
 
 if __name__ == "__main__":
-    mqtt.subscribe(settings.MQTT_TOPIC)
+    
     app.run(host="0.0.0.0",port=settings.SERVER_PORT,debug=True,use_reloader=False)
